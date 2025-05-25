@@ -69,8 +69,11 @@ export function RedEnvelopeCard({ address, onGrabSuccess }: RedEnvelopeCardProps
 
   const [host, totalAmount, envelopeCount, remainingCount, theme, isEqual, isActive, createdAt] = envelopeInfo;
 
+  // 检查当前用户是否是红包发送者
+  const isHost = userAddress && host && userAddress.toLowerCase() === host.toLowerCase();
+
   const handleGrab = async () => {
-    if (!userAddress) return;
+    if (!userAddress || isHost) return;
     
     setIsGrabbing(true);
     try {
@@ -85,14 +88,15 @@ export function RedEnvelopeCard({ address, onGrabSuccess }: RedEnvelopeCardProps
     }
   };
 
-  const canGrab = userAddress && isActive && remainingCount > 0 && !isGrabbed;
+  const canGrab = userAddress && isActive && remainingCount > 0 && !isGrabbed && !isHost;
 
   return (
-    <Card className={`red-envelope text-white overflow-hidden ${!isActive ? 'opacity-60' : ''}`}>
+    <Card className={`red-envelope text-white overflow-hidden ${!isActive ? 'opacity-60' : ''} ${isHost ? 'ring-2 ring-yellow-400' : ''}`}>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-xl">
           <span className="flex items-center gap-2">
             {getRandomEmoji()} {theme || '红包'}
+            {isHost && <span className="text-xs bg-yellow-500 text-red-800 px-2 py-1 rounded-full">我的</span>}
           </span>
           <span className="text-sm opacity-80">
             {isEqual ? '平分' : '拼手气'}
@@ -156,6 +160,13 @@ export function RedEnvelopeCard({ address, onGrabSuccess }: RedEnvelopeCardProps
         {userAddress && isGrabbed && (
           <div className="text-center text-yellow-200">
             你已经抢过这个红包了
+          </div>
+        )}
+
+        {/* 发送者不能抢自己的红包 */}
+        {userAddress && isHost && isActive && (
+          <div className="text-center text-yellow-200 bg-orange-600 bg-opacity-50 p-3 rounded-lg">
+            🎁 这是你发送的红包，不能抢自己的红包哦
           </div>
         )}
       </CardContent>

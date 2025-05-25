@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useReadContract } from 'wagmi';
+import { useReadContract, useAccount } from 'wagmi';
 import { RedEnvelopeCard } from './RedEnvelopeCard';
 import { RED_ENVELOPE_FACTORY_ABI, RED_ENVELOPE_FACTORY_ADDRESS } from '@/lib/contracts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, Gift } from 'lucide-react';
+import { RefreshCw, Gift, User } from 'lucide-react';
 
 interface RedEnvelopeListProps {
   onGrabSuccess?: (amount: string) => void;
@@ -14,6 +14,7 @@ interface RedEnvelopeListProps {
 
 export function RedEnvelopeList({ onGrabSuccess }: RedEnvelopeListProps) {
   const [refreshKey, setRefreshKey] = useState(0);
+  const { address: userAddress } = useAccount();
 
   // 获取所有红包地址
   const { data: envelopes, isLoading, refetch } = useReadContract({
@@ -22,6 +23,17 @@ export function RedEnvelopeList({ onGrabSuccess }: RedEnvelopeListProps) {
     functionName: 'getAllRedEnvelopes',
     query: {
       refetchInterval: 10000, // 每10秒自动刷新
+    },
+  });
+
+  // 获取用户发送的红包
+  const { data: userEnvelopes } = useReadContract({
+    address: RED_ENVELOPE_FACTORY_ADDRESS,
+    abi: RED_ENVELOPE_FACTORY_ABI,
+    functionName: 'getUserRedEnvelopes',
+    args: userAddress ? [userAddress] : undefined,
+    query: {
+      refetchInterval: 10000,
     },
   });
 
@@ -56,10 +68,18 @@ export function RedEnvelopeList({ onGrabSuccess }: RedEnvelopeListProps) {
       <Card className="glass-card border-2 border-red-200">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-red-700">
-              <Gift className="w-6 h-6" />
-              可抢红包 ({envelopes?.length || 0})
-            </CardTitle>
+            <div className="flex items-center gap-4">
+              <CardTitle className="flex items-center gap-2 text-red-700">
+                <Gift className="w-6 h-6" />
+                可抢红包 ({envelopes?.length || 0})
+              </CardTitle>
+              {userAddress && userEnvelopes && userEnvelopes.length > 0 && (
+                <div className="flex items-center gap-2 text-sm text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
+                  <User className="w-4 h-4" />
+                  我发送的: {userEnvelopes.length}
+                </div>
+              )}
+            </div>
             <Button
               onClick={handleRefresh}
               className="bg-red-100 hover:bg-red-200 text-red-700 border border-red-300"

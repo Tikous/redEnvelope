@@ -458,7 +458,7 @@ export const RED_ENVELOPE_FACTORY_ADDRESS = "0x21283bFdAB6979B3a5D885be709D88dD4
 export const SUPPORTED_CHAINS = {
   localhost: {
     id: 1337,
-    name: 'Localhost',
+    name: 'Localhost (Ganache)',
     network: 'localhost',
     nativeCurrency: {
       decimals: 18,
@@ -473,6 +473,7 @@ export const SUPPORTED_CHAINS = {
         http: ['http://127.0.0.1:7545'],
       },
     },
+    testnet: true,
   },
   sepolia: {
     id: 11155111,

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ConnectKitButton } from 'connectkit';
+import { WalletConnection } from '@/components/WalletConnection';
+import { NetworkStatus } from '@/components/NetworkStatus';
 import { CreateEnvelopeForm } from '@/components/CreateEnvelopeForm';
 import { RedEnvelopeList } from '@/components/RedEnvelopeList';
 import { Notification } from '@/components/Notification';
@@ -58,12 +59,16 @@ export default function HomePage() {
                 <p className="text-sm text-red-600">基于区块链的红包发送和抢夺</p>
               </div>
             </div>
-            <ConnectKitButton />
+            <WalletConnection />
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <NetworkStatus />
+        </div>
+        
         <Card className="glass-card mb-8">
           <CardContent className="p-4">
             <div className="flex gap-4">
