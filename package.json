@@ -1,0 +1,18 @@
+{
+  "name": "redenvolope",
+  "version": "1.0.0",
+  "description": "基于区块链的红包系统",
+  "main": "index.js",
+  "scripts": {
+    "start": "node start.js",
+    "compile": "truffle compile",
+    "migrate": "truffle migrate",
+    "migrate:reset": "truffle migrate --reset",
+    "test": "truffle test",
+    "dev:web": "cd web && npm run dev",
+    "build:web": "cd web && npm run build"
+  },
+  "keywords": ["blockchain", "ethereum", "red-envelope", "dapp", "web3"],
+  "author": "",
+  "license": "MIT"
+}
